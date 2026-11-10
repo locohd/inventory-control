@@ -22,17 +22,37 @@ except FileNotFoundError:
 for producto in almacen.inventario:
     almacen.strock.setdefault(producto, 0)
 
+try:
+    with open("precios.txt", "r", encoding="utf-8") as archivo:
+        for linea in archivo.read().splitlines():
+            nombre, separador, precio = linea.partition("|")
+            nombre = nombre.strip()
+            if nombre and separador:
+                try:
+                    almacen.precios[nombre] = float(precio.strip())
+                except ValueError:
+                    print(f"Precio inválido para {nombre}: {precio}")
+except FileNotFoundError:
+    pass
+
 def guardar_inventario():
     with open("inventario.txt", "w", encoding="utf-8") as archivo:
         for producto in almacen.inventario:
             archivo.write(f"{producto}|{almacen.strock[producto]}\n")
+def guardar_precios():
+    with open("precios.txt", "w", encoding="utf-8") as archivo:
+        for producto in almacen.precios:
+            precio = almacen.precios[producto]
+            archivo.write(f"{producto}|{precio}\n")
 
 # Buscar productos
 while True:
    print("1. Buscar productos en el almacén")
    print("2. Vender articulo")
    print("3. Agregar articulo")
-   print("4. salir")
+   print("4. poner precio a un producto")
+   print("5. ver precio de un producto")
+   print("6. salir")
 
    opcion = input("Ingrese una opción: ")
    if opcion == "1":
@@ -90,10 +110,34 @@ while True:
             print("No se ha agregado el producto al inventario.")
             input("Presione Enter para continuar...")         
    elif opcion == "4":
-      print("Saliendo del programa...")
-      break
+      producto = input("Ingrese el nombre del producto al que desea ponerle precio: ").strip()
+      if producto in almacen.inventario:
+         precio = float(input("Ingrese el precio del producto: "))
+         almacen.precios[producto] = precio
+         guardar_precios()
+         print(f"El precio del producto {producto} ha sido actualizado a {precio}.")
+         input("Presione Enter para continuar...")
+      else:
+         print(f"El producto {producto} no se encuentra en el inventario.")
+         input("Presione Enter para continuar...")
+   elif opcion == "5":
+      producto = input("Ingrese el nombre del producto para ver su precio: ").strip()
+      if producto in almacen.precios:
+         precio = almacen.precios[producto]
+         print(f"El precio del producto {producto} es: {precio}")
+         input("Presione Enter para continuar...")
+      else:
+         print(f"El producto {producto} no tiene un precio asignado.")
+         respuesta = input("¿Desea asignarle un precio? (s/n): ")
+         if respuesta == "s":
+             precio = float(input("Ingrese el precio del producto: "))
+             almacen.precios[producto] = precio
+             guardar_precios()
+             print(f"El precio del producto {producto} a sido asignado a {precio}.")
+             input("Presione Enter para continuar...")
+         else:
+             print("No se ha asignado un precio al producto.")
+             input("Presione Enter para continuar...")
        
         
       
-
-
