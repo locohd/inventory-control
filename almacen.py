@@ -46,3 +46,15 @@ inventario =[
    "velas",
    "galletas",
 ]
+precios = {
+   "manzanas": 20,
+   "refrescos": 22,
+   "cerveza": 40,
+   "sabritas": 22,
+   "leche": 56,
+   "aguacate": 60,
+   "queso": 100,
+   "crema": 80,
+   "velas": 20,
+   "galletas": 20
+}
